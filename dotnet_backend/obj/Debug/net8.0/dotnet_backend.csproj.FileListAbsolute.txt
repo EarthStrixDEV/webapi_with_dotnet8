@@ -109,3 +109,4 @@ D:\Dev-WS02\webapi_with_dotnet\dotnet_backend\bin\Debug\net8.0\ru\Microsoft.Code
 D:\Dev-WS02\webapi_with_dotnet\dotnet_backend\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\Dev-WS02\webapi_with_dotnet\dotnet_backend\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\Dev-WS02\webapi_with_dotnet\dotnet_backend\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\Dev-WS02\webapi_with_dotnet\dotnet_backend\obj\Debug\net8.0\dotnet_backend.sourcelink.json

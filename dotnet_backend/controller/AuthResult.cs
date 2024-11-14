@@ -1,5 +1,3 @@
-using EnumStatus;
-
 namespace controller
 {
     public class AuthResult {

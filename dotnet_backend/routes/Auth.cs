@@ -1,25 +1,26 @@
 using controller;
 using model;
-using EnumStatus;
 
 public static class Auth {
     public static void AuthSignIn(this IEndpointRouteBuilder endPoints) {
-        endPoints.MapPost("/SignIn", async (Users user_ ,AuthService authService) => {
-            AuthResult userSignIn = await authService.UserSignIn(user_);
-            if (userSignIn.Status == StatusCodes.Status404NotFound) {
-                return Results.Json(new {message = "Sign in failed"}, statusCode: StatusCodes.Status404NotFound);
-            }
-            return Results.Ok(new {message = userSignIn.Message ,status = userSignIn.Status});
-        });
+        endPoints.MapPost("/SignIn", async (UserAuth user ,AuthService authService) => {
+            AuthResult userSignIn = await authService.UserSignIn(user);
+            return userSignIn.Status switch {
+                StatusCodes.Status200OK => Results.Json(new {message = userSignIn.Message} ,statusCode: StatusCodes.Status200OK),
+                StatusCodes.Status404NotFound => Results.Json(new {message = userSignIn.Message} ,statusCode: StatusCodes.Status404NotFound),
+                _ => Results.Problem(detail: "Unexpected error occurred in the server", statusCode: StatusCodes.Status500InternalServerError ,title: "Internal Server Error")
+            };
+        }).WithName("SignIn").WithOpenApi();
     }
 
     public static void AuthSignUp(this IEndpointRouteBuilder endPoints) {
-        endPoints.MapPost("/signUp", async(Users user_ ,AuthService authService) => {
-            AuthResult userSignUp = await authService.UserSignUp(user_);
-            if (userSignUp.Status == StatusCodes.Status400BadRequest) {
-                return Results.BadRequest(new {status = userSignUp.Status, message = userSignUp.Message});
-            }
-            return Results.Ok(new {message = userSignUp.Message , status = userSignUp.Status});
-        });
+        endPoints.MapPost("/SignUp", async(Users user ,AuthService authService) => {
+            AuthResult userSignUp = await authService.UserSignUp(user);
+            return userSignUp.Status switch {
+                StatusCodes.Status200OK => Results.Json(new {message = userSignUp.Message} ,statusCode: StatusCodes.Status200OK),
+                StatusCodes.Status400BadRequest => Results.Json(new {message = userSignUp.Message} ,statusCode: StatusCodes.Status400BadRequest),
+                _ => Results.Problem(detail: "Unexpected error occurred in the server", statusCode: StatusCodes.Status500InternalServerError, title: "internal Server Error")
+            };
+        }).WithName("SignUp").WithOpenApi();
     }
 }

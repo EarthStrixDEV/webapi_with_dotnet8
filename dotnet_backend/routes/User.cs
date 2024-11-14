@@ -2,11 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using model;
 using controller;
+using Microsoft.AspNetCore.Mvc;
 
 public static class User {
     public static void GetAllUser(this IEndpointRouteBuilder endpoints) {
-        endpoints.MapGet("/getAllUser", async(AppDbContext dbContext) => {
-            var users = await dbContext.Users.ToListAsync();
+        endpoints.MapGet("/getAllUser", async([FromServices] UserService userService) => {
+            var users = await userService.GetAllUsersAsync();
             var options = new JsonSerializerOptions {
                 WriteIndented = true
             };
@@ -15,8 +16,8 @@ public static class User {
     }
 
     public static void GetUserWithId(this IEndpointRouteBuilder endpoints) {
-        endpoints.MapGet("/getUser/{id}", async(int id ,AppDbContext dbContext) => {
-            var users = await dbContext.Users.FindAsync(id);
+        endpoints.MapGet("/getUser/{id}", async(int id ,UserService userService) => {
+            var users = await userService.GetUserByIdAsync(id);
             var options = new JsonSerializerOptions {
                 WriteIndented = true
             };
@@ -25,9 +26,9 @@ public static class User {
     }
 
     public static void CreateUser(this IEndpointRouteBuilder endpoints) {
-        endpoints.MapPost("/createUser", async (AppDbContext dbContext, Users newUser) => {
-            dbContext.Users.Add(newUser);
-            await dbContext.SaveChangesAsync();
+        endpoints.MapPost("/createUser", async (AppDbContext _dbContext , Users newUser) => {
+            _dbContext.Add(newUser);
+            await _dbContext.SaveChangesAsync();
             return Results.Created("/getUser/{id}", newUser);
         }).WithName("CreateUser").WithOpenApi();
     }

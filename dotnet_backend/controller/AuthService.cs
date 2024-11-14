@@ -15,11 +15,20 @@ namespace controller
         
         public async Task<AuthResult> UserSignUp(Users newUser) {
             var findUser = await _dbContext.Users.FirstOrDefaultAsync(user => user.Name == newUser.Name && user.Email == newUser.Email);
+            const string EmailFormat = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 
             if (findUser is not null) {
                 return new AuthResult {
                     IsSuccess = false,
-                    Message = "User already signed up",
+                    Message = "User already signed up ,Please enter your new username",
+                    Status = (int)Status.BadRequest
+                };
+            }
+
+            if (Regex.IsMatch(newUser.Email ,EmailFormat)) {
+                return new AuthResult {
+                    IsSuccess = false,
+                    Message = "Email format is invalid",
                     Status = (int)Status.BadRequest
                 };
             }
@@ -43,13 +52,13 @@ namespace controller
             };
         }
 
-        public async Task<AuthResult> UserSignIn(Users user) {
-            var findUser = await _dbContext.Users.FirstAsync(data => data.Email == user.Email && data.Password == user.Password);
+        public async Task<AuthResult> UserSignIn(UserAuth user) {
+            var findUser = await _dbContext.Users.FirstOrDefaultAsync(data => data.Email == user.Email && data.Password == user.Password);
             
             if (findUser is null) {
                 return new AuthResult {
                     IsSuccess = false,
-                    Message = "User not found",
+                    Message = "Invalid username or password",
                     Status = (int)Status.NotFound
                 };
             }

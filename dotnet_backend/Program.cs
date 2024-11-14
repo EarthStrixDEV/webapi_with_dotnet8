@@ -1,3 +1,4 @@
+using controller;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -20,6 +21,9 @@ builder.Services.AddSession(options => {
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("defaultConnection"));
 });
+
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -44,5 +48,8 @@ app.MapGet("/getDotNet", () => {
 app.GetAllUser();
 app.GetUserWithId();
 app.CreateUser();
+
+app.AuthSignIn();
+app.AuthSignUp();
 
 app.Run();
